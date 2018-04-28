@@ -11,10 +11,11 @@ namespace MyWebApi
 {
     public class WebApiApplication : System.Web.HttpApplication
     {
+        //when application starts it will call Application_Start event
         protected void Application_Start()
         {
             AreaRegistration.RegisterAllAreas();
-            GlobalConfiguration.Configure(WebApiConfig.Register);
+            GlobalConfiguration.Configure(WebApiConfig.Register);//The Configure() method requires a callback method where you have configured your Web API.
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);

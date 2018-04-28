@@ -15,6 +15,14 @@ namespace MyWebApi.Controllers
             return new string[] { "value1", "value2" };
         }
 
+        //Cách 2 để viết method trong Web API
+        [HttpGet]
+        [Route("api/values/getvalue1")] //Attribute routing
+        public IEnumerable<string> GetValue1()
+        {
+            return new string[] { "value 1" };
+        }
+
         // GET api/values/5
         public string Get(int id)
         {
