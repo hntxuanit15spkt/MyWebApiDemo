@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Newtonsoft.Json.Serialization;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Formatting;
 using System.Web.Http;
 using System.Web.Http.Routing;
 
@@ -31,6 +33,9 @@ namespace MyWebApi
                 routeTemplate: "api/{controller}/{id}", //URL pattern of the route, use api here is just to avoid confusion between MVC Controller and API Controller
                 defaults: new { id = RouteParameter.Optional } //an object parameter that includes default route parameters
             );
+
+            JsonMediaTypeFormatter jsonFormatter = config.Formatters.JsonFormatter;
+            jsonFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
         }
     }
 }
