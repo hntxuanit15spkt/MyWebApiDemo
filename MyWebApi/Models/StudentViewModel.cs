@@ -12,7 +12,6 @@ namespace MyWebApi.Models
         public String FirstName { get; set; }
         public String LastName { get; set; }
 
-        public AddressViewModel Address { get; set; }
         public StandardViewModel Standard { get; set; }
     }
 }

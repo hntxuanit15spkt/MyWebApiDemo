@@ -12,18 +12,19 @@ namespace MyWebApi
     {
         public static void Register(HttpConfiguration config)
         {
+            config.EnableCors();
             // Web API configuration and services
 
             // Web API routes
-            //Maps the attribute-defined routes for the application. Enable attrubute routing in order to use attribute routing with the Web API
+            //Maps the attribute-defined routes for the application. Enable attribute routing in order to use attribute routing with the Web API
             config.MapHttpAttributeRoutes();
 
             //config.Routes is a route table or route collection of type HttpRouteCollection
             //if incomming request url match with SchoolRoute template, so it will be handled by SchoolController
-            IHttpRoute SchoolRoute = config.Routes.CreateRoute("api/myschool/{id}", new { controller = "school", id = RouteParameter.Optional }, constraints: new { id = "/d+" });
+            //IHttpRoute SchoolRoute = config.Routes.CreateRoute("api/myschool/{id}", new { controller = "school", id = RouteParameter.Optional }, constraints: new { id = "/d+" });
 
             //Add route into a collection manually
-            config.Routes.Add("School", SchoolRoute);
+            //config.Routes.Add("School", SchoolRoute);
 
             //MapHttpRoute is extension method internally creates a new instance of IHttpRoute and add it to an HttpRouteCollection
             //contraints: regex expression to specify characteristic of values route
