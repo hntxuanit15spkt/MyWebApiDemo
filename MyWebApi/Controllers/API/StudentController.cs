@@ -99,7 +99,7 @@ namespace MyWebApi.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest("Invalid Data");
+                return BadRequest("Not a valid model");
             }
 
             using (var context = new SchoolEntities())
@@ -110,7 +110,6 @@ namespace MyWebApi.Controllers
                     FirstName = student.FirstName,
                     LastName = student.LastName
                 });
-
                 context.SaveChanges();
             }
 

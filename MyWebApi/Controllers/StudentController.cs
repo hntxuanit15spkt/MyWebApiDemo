@@ -21,26 +21,50 @@ namespace MyWebApi.Controllers
 
                 var result = responseTask.Result; // cannot get the result here 
 
-                students = Enumerable.Empty<StudentViewModel>();
+                if (result.IsSuccessStatusCode)
+                {
+                    var readTask = result.Content.ReadAsAsync<IList<StudentViewModel>>();
+                    readTask.Wait();
 
-                ModelState.AddModelError(string.Empty, "Server error. Please contact administrator");
-                //if (result.IsSuccessStatusCode)
-                //{
-                //    var readTask = result.Content.ReadAsAsync<IList<StudentViewModel>>();
-                //    readTask.Wait();
+                    students = readTask.Result;
+                }
+                else
+                {
+                    //log response status here
 
-                //    students = readTask.Result;
-                //}
-                //else
-                //{
-                //    //log response status here
+                    students = Enumerable.Empty<StudentViewModel>();
 
-                //    students = Enumerable.Empty<StudentViewModel>();
-
-                //    ModelState.AddModelError(string.Empty, "Server error. Please contact administrator");
-                //}
+                    ModelState.AddModelError(string.Empty, "Server error. Please contact administrator");
+                }
 
                 return View(students);
+            }
+        }
+
+        public ActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult Create(StudentViewModel student)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("http://localhost:57811/api/");
+
+                //PostAsJsonAsync method serializes an object to JSON and sends the JSON payload in a POST request
+                var postTask = client.PostAsJsonAsync<StudentViewModel>("StudentApi", student);
+                postTask.Wait();
+
+                var result = postTask.Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("Index");
+                }
+
+                ModelState.AddModelError(string.Empty, "Server Error. Please contact administrator.");
+                return View(student);
             }
         }
     }
