@@ -1,4 +1,5 @@
-﻿using MyWebApi.Models;
+﻿using MyWebApi.Common;
+using MyWebApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +16,7 @@ namespace MyWebApi.Controllers
             IEnumerable<StudentViewModel> students = null;
             using (var client = new HttpClient())
             {
-                client.BaseAddress = new Uri("http://localhost:57811/api/");
+                client.BaseAddress = new Uri(Defines.URI_BASE);
                 var responseTask = client.GetAsync("StudentApi");
                 responseTask.Wait(); // if without this line,...
 
@@ -51,21 +52,71 @@ namespace MyWebApi.Controllers
         {
             using (var client = new HttpClient())
             {
-                client.BaseAddress = new Uri("http://localhost:57811/api/");
-
-                //PostAsJsonAsync method serializes an object to JSON and sends the JSON payload in a POST request
+                client.BaseAddress = new Uri(Defines.URI_BASE);
                 var postTask = client.PostAsJsonAsync<StudentViewModel>("StudentApi", student);
-                postTask.Wait();
-
                 var result = postTask.Result;
                 if (result.IsSuccessStatusCode)
                 {
                     return RedirectToAction("Index");
                 }
-
-                ModelState.AddModelError(string.Empty, "Server Error. Please contact administrator.");
-                return View(student);
+                else
+                {
+                    ModelState.AddModelError(String.Empty, "Server error. Please contact administrator.");
+                }
             }
+            return RedirectToAction("Index");
+        }
+
+        public ActionResult Edit(int id)
+        {
+            StudentViewModel student = null;
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(Defines.URI_BASE);
+                var responseTask = client.GetAsync("StudentApi?id=" + id);
+                responseTask.Wait();
+                var result = responseTask.Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    var readTask = result.Content.ReadAsAsync<StudentViewModel>();
+                    readTask.Wait();
+                    student = readTask.Result;
+                }
+            }
+            return View(student);
+        }
+
+        [HttpPost]
+        public ActionResult Edit(StudentViewModel student)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(Defines.URI_BASE);
+                var putTask = client.PutAsJsonAsync<StudentViewModel>("StudentApi", student);
+                putTask.Wait();
+                var result = putTask.Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("Index");
+                }
+            }
+
+            return View(student);
+        }
+
+        public ActionResult Delete (int id)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(Defines.URI_BASE);
+                var deleteTask = client.DeleteAsync("StudentApi?id=" + id);
+                var result = deleteTask.Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("Index");
+                }
+            }
+            return RedirectToAction("Index");
         }
     }
 }

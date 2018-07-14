@@ -11,7 +11,8 @@ namespace MyWebApi.DataAccess
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel.DataAnnotations.Schema;
+
     public partial class Student
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -20,7 +21,8 @@ namespace MyWebApi.DataAccess
             this.Courses = new HashSet<Course>();
         }
     
-        public long StudentId { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public Int64 StudentId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public Nullable<long> StandardId { get; set; }

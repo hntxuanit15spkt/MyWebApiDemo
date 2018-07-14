@@ -16,29 +16,29 @@ namespace MyWebApi.Controllers
         {
         }
 
-        //public IHttpActionResult GetStudentById(int id)
-        //{
-        //    StudentViewModel student = null;
-        //    using (var context = new SchoolEntities())
-        //    {
-        //        student = context.Students
-        //            .Include("StudentAddress")
-        //            .Where(p => p.StudentId == id)
-        //            .Select(s => new StudentViewModel()
-        //            {
-        //                Id = s.StudentId,
-        //                FirstName = s.FirstName,
-        //                LastName = s.LastName
-        //            }).FirstOrDefault<StudentViewModel>();
-        //    }
+        public IHttpActionResult GetStudentById(int id)
+        {
+            StudentViewModel student = null;
+            using (var context = new SchoolEntities())
+            {
+                student = context.Students
+                    .Include("StudentAddress")
+                    .Where(p => p.StudentId == id)
+                    .Select(s => new StudentViewModel()
+                    {
+                        Id = s.StudentId,
+                        FirstName = s.FirstName,
+                        LastName = s.LastName
+                    }).FirstOrDefault<StudentViewModel>();
+            }
 
-        //    if (student == null)
-        //    {
-        //        return NotFound();
-        //    }
+            if (student == null)
+            {
+                return NotFound();
+            }
 
-        //    return Ok(student);
-        //}
+            return Ok(student);
+        }
 
         public IHttpActionResult GetAllStudents(bool includeAddress = false)
         {
@@ -125,44 +125,29 @@ namespace MyWebApi.Controllers
 
             using (var context = new SchoolEntities())
             {
-                var existStudent = context.Students.Where(s => s.StudentId == student.Id).FirstOrDefault<Student>();
-
-                if (existStudent != null)
+                var existingStudent = context.Students.Where(s => s.StudentId == student.Id).FirstOrDefault();
+                if (existingStudent != null)
                 {
-                    existStudent.FirstName = student.FirstName;
-                    existStudent.LastName = student.LastName;
-                }
-                else
-                {
-                    return NotFound();
-                }
-
-                context.SaveChanges();
-            }
-
-            return Ok();
-        }
-
-        public IHttpActionResult Delete(int standardId)
-        {
-            if (standardId < 0)
-            {
-                return BadRequest("Not a valid student id");
-            }
-
-            using (var context = new SchoolEntities())
-            {
-                var standard = context.Standards.Include("Students").Where(s => s.StandardId == standardId).FirstOrDefault();
-                if (standard != null)
-                {
-                    //context.Entry(standard).State = System.Data.Entity.EntityState.Deleted;
-                    context.Standards.Remove(standard);
+                    existingStudent.FirstName = student.FirstName;
+                    existingStudent.LastName = student.LastName;
                     context.SaveChanges();
                 }
                 else
                 {
                     return NotFound();
                 }
+            }
+
+            return Ok();
+        }
+
+        public IHttpActionResult Delete(int id)
+        {
+            using (var context = new SchoolEntities())
+            {
+                var existingStudent = context.Students.Where(s => s.StudentId == id).FirstOrDefault();
+                context.Entry(existingStudent).State = System.Data.Entity.EntityState.Deleted;
+                context.SaveChanges();
             }
             return Ok();
         }
